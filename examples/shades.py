@@ -8,10 +8,8 @@ import random
 bottomhat = Adafruit_MotorHAT(addr=0x61)
 tophat = Adafruit_MotorHAT(addr=0x60)
 
-# create empty threads (these will hold the stepper 1, 2 & 3 threads)
 stepperThreads = [threading.Thread(), threading.Thread(), threading.Thread()]
 
-# recommended for auto-disabling motors on shutdown!
 def turnOffMotors():
     tophat.getMotor(1).run(Adafruit_MotorHAT.RELEASE)
     tophat.getMotor(2).run(Adafruit_MotorHAT.RELEASE)
@@ -39,8 +37,7 @@ def stepper_worker(stepper, numsteps, direction, style):
     stepper.step(numsteps, direction, style)
     #print("Done")
 
-while (True):
-    for i in range(3):
-        if not stepperThreads[i].isAlive():
-            stepperThreads[i] = threading.Thread(target=stepper_worker, args=(steppers[i], 50, Adafruit_MotorHAT.FORWARD, Adafruit_MotorHAT.SINGLE,))
-            stepperThreads[i].start()
+for i in range(3):
+    if not stepperThreads[i].isAlive():
+        stepperThreads[i] = threading.Thread(target=stepper_worker, args=(steppers[i], 200, Adafruit_MotorHAT.FORWARD, Adafruit_MotorHAT.SINGLE))
+        stepperThreads[i].start()
